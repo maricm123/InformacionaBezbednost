@@ -1,15 +1,116 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-<script type="text/javascript" src="js/main.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<title>Spring Security example</title>
+
+<!-- Ukljucivanje JQuery biblioteke -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<!-- Ukljucivanje Bootstrap-a za izgled aplukacije -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+
+<!-- Ukljucivanje js fajlova -->
+<script src="js/app.js"></script>
+
 </head>
+
 <body>
-	<a href="./user_content/cat.jpg" download>Download link for static
-		files</a>
-	<button type="button"  onclick="download()">Download link for
-		target/files files</button>
+
+	<div id="loginForm">
+		<h1 style="margin-left:1.25em;">Login</h1>
+		<form role="form" class="col-sm-6 col-lg-4">
+			<div class="form-group">
+				<label for="username">Username:</label> <input type="text"
+					placeholder="user/admin" class="form-control" id="username"
+					name="username" />
+			</div>
+			<div class="form-group">
+				<label for="password">Password:</label> <input type="password"
+					placeholder="123" class="form-control" id="password"
+					name="password" />
+			</div>
+			<button type="button" onclick="login()" class="btn btn-primary">Login</button>
+		</form>
+		<div class="col-sm-6 col-lg-4 alert alert-danger" role="alert" id="wrongCredentialsError" style="display:none;">
+		  Wrong credentials!
+		</div>
+	</div>
+	
+	<div id="otherForm" style="display:none;">
+		<h1 style="margin-left:1.25em;" id="welcomeMessage"></h1>
+		
+		<br/>
+		
+		<!-- Who am I?  -->
+		<div class="card">
+	      <div class="card-header">Who am I? Required role <b>USER</b></div>
+	      <div class="card-body">
+	      	<button type="button" onclick="whoAmI()" class="btn btn-primary form-group">Who am I?</button> <br/>
+			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="whoAmIError" style="display:none;">
+			  You do not have sufficient rights to access this URL!
+			</div> 
+			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="whoAmISuccess" style="display:none;">
+			  Success! Data is printed in console.
+			</div>
+	      </div>
+	    </div>
+		
+		<br/>
+		
+		<!-- Get all users  -->
+		<div class="card">
+	      <div class="card-header">Get all users. Required role <b>ADMIN</b></div>
+	      <div class="card-body">
+	      	<button type="button" onclick="getAllUsers()" class="btn btn-primary form-group">Get All Users</button>
+			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="getAllUsersError" style="display:none;">
+			  You do not have sufficient rights to access this URL!
+			</div>
+			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="getAllUsersSuccess" style="display:none;">
+			  Success! Data is printed in console.
+			</div>
+	      </div>
+	    </div>
+	    
+	    <br/>
+	    
+	    <!--Foo -->
+		<div class="card">
+	      <div class="card-header">Foo. No authentication is required</div>
+	      <div class="card-body">
+	      	<button type="button" onclick="foo()" class="btn btn-primary form-group">Foo</button>
+			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="fooError" style="display:none;">
+			  You do not have sufficient rights to access this URL!
+			</div>
+			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="fooSuccess" style="display:none;">
+			  Success! Data is printed in console.
+			</div>
+	      </div>
+	    </div>
+	    
+	    <br/>
+	    
+	    <div class="card">
+	      <div class="card-header">
+	      	<div class="btn-group">
+		      	<button type="button" onclick="logout()" class="btn btn-info form-group" style="margin-right:1.25em;">Log out</button>
+	 			<button type="button" onclick="goToLogin()" class="btn btn-info form-group">Go to login form</button> <br/>
+ 			</div>
+	      </div>
+	    </div>
+		
+	</div>
+
 </body>
 
 </html>
