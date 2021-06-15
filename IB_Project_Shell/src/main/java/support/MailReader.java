@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 public class MailReader {
 
   // ...
-
+ 
 
   /**
    * List all Messages of the user's mailbox matching the query.
