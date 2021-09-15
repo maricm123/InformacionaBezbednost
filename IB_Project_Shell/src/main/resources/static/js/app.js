@@ -7,7 +7,7 @@ function login() {
 	
 	// kreiramo JavaScript objekat sa podacima koje je korisnik uneo u input polja
 	var user = {
-		'username' : $('#username').val(),
+		'username' : $('#email').val(),
 		'password': $('#password').val()
 	}
 	
@@ -39,7 +39,18 @@ function login() {
 	    	}
 	    	
 	    	// 4. prikazemo novu formu
-	    	showAnotherForm();
+			showAnotherForm();
+			$('#jksId').append('<button type="button" onclick="getJks(\''+ username +'\')" class="btn btn-primary">Get jks file</button>');
+			/*var pos=roles.indexOf(" ");
+			if(pos>0){
+				var subs2=roles.substring(pos+1, roles.length-1);
+			}
+			var subs1=roles.substring(0, pos);
+			console.log(subs2);
+			console.log(subs1);
+			if(subs1!="ROLE_ADMIN" && subs2!="ROLE_ADMIN"){
+				$('#allUsersForm').remove();
+			}*/
 	    	
 	    },
 	    error: function (error)
@@ -48,6 +59,53 @@ function login() {
 	    	$('#wrongCredentialsError').show();
 	    }
 	});
+} 
+
+function register() {
+	
+	// kreiramo JavaScript objekat sa podacima koje je korisnik uneo u input polja
+	var user = {
+		'email' : $('#emailRegister').val(),
+		'password': $('#passwordRegister').val()
+	}
+	
+	// podatke na backend uvek saljemo kao JSON string
+	var userJSON = JSON.stringify(user);
+	
+	$.ajax({
+	    url : '/auth/signup',
+	    type: 'POST',
+	    data : userJSON,
+	    contentType:"application/json; charset=utf-8",
+	    dataType:"json",
+		success: function(data)
+	    {  	
+			console.log("U success sam");
+			console.log(data);
+	    	alert(data.r);
+	    	// 4. prikazemo login formu
+	    	showLoginForm();
+		},
+		error: function (data)
+	    {
+			console.log("U erroru sam");
+			console.log(data);
+	    	alert(data.responseJSON.r);
+	    }
+	});
+}
+
+function signup() {
+	
+	// prikazujemo Register formu
+	$('#registerForm').show();
+	
+	// sakrijemo Login formu
+	$('#loginForm').hide();
+	
+	// sakrijemo drugu formu
+	$('#otherForm').hide();
+	
 }
 
 function logout() {
@@ -59,14 +117,8 @@ function logout() {
 	
 	localStorage.removeItem('jwt');
 	
-	$('#welcomeMessage').text('You are not currently logged in!');
-	
-	$('#getAllUsersError').hide();
-	$('#getAllUsersSuccess').hide();
-	$('#whoAmIError').hide();
-	$('#whoAmISuccess').hide();
-	$('#fooError').hide();
-	$('#fooSuccess').hide();
+	$('#otherForm').hide();
+	goToLogin();
 	
 }
 
@@ -78,8 +130,15 @@ function goToLogin() {
 	location.reload();
 }
 
+function showLoginForm() {
+	
+	// prikazujemo Login formu
+	$('#loginForm').show();
+	$('#registerForm').hide();
+}
+
 function showAnotherForm() {
-	$('#welcomeMessage').text('Hello ' + username + '! Your roles: ' + roles);
+	$('#welcomeMessage').text('Hello ' + username + '!');
 	
 	// sakrijemo Login formu
 	$('#loginForm').hide();
@@ -88,47 +147,139 @@ function showAnotherForm() {
 	$('#otherForm').show();
 }
 
-function whoAmI() {
+function sendMessage() {
+
+	var emailAddress=$('#emailReciever');
+	var subject=$('#subjectMessage');
+	var content=$('#contentMessage');
+
+	var message = {
+		'emailAddress' : emailAddress.val(),
+		'sender' : username,
+		'subject' : subject.val(),
+		'content': content.val()
+	}
+
+	// podatke na backend uvek saljemo kao JSON string
+	var messageJSON = JSON.stringify(message);
+
 	$.ajax({
-	    url : '/api/whoami',
-	    type: 'GET',
+	    url : '/api/message/send',
+		type: 'POST',
+		data : messageJSON,
 	    contentType:"application/json; charset=utf-8",
 	    dataType:"json",
 	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
 	    success: function(data)
 	    {
-	    	console.log('Who Am I - Response:')
-	    	console.log(data);
-	    	console.log("===========================================================================");
-	    	
-	    	
-	    	$('#whoAmIError').hide();
-	    	$('#whoAmISuccess').show();
-	    	
+	    	console.log("U success sam");
+			console.log(data);
+			alert(data.r);
+			emailAddress.val("");
+			subject.val("");
+			content.val("");
 	    },
-	    error: function (error)
+	    error: function (data)
 	    {
-	    	$('#whoAmIError').show();
-	    	$('#whoAmISuccess').hide();
+	    	console.log("U erroru sam");
+			console.log(data);
+			alert(data.responseJSON.r);
+	    }
+	});
+
+}
+
+function showCreateMessage() {
+	var createMessage=$('#createMessage');
+	createMessage.show();
+}
+
+function changeActive(email) {
+	
+	console.log("email: "+email);
+	var checkboxId=$('[name=\''+email+'\']'); 
+	
+	console.log("checkboxId: "+checkboxId.is(':checked'));
+	var checked=false;
+	if(checkboxId.is(':checked')){
+		console.log("CEKIRAN "+checkboxId.is(':checked'));
+		checked=true;
+	}else{
+		console.log("ODCEKIRAN "+checkboxId.is(':checked'));
+	}
+	
+	$.ajax({
+	    url : '/auth/activate',
+	    type: 'POST',
+	    data : JSON.stringify({'email':email, 'active':checked}),
+	    contentType:"application/json; charset=utf-8",
+	    dataType:"json",
+	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
+	    success: function(data)
+	    {
+	    	console.log("Uspesno de/aktiviran");
+	    	getAllUsers();
 	    }
 	});
 }
 
 function getAllUsers() {
+	
+	var emailFilterInput=$('#emailFilterInput');
+	var emailFilter=emailFilterInput.val();
+	var usersTable = $('#usersTable');
+
+	if(emailFilter === ""){
+		emailFilter="empty";
+	}
+
+	console.log('emailFilter: ' + emailFilter);
+	
 	$.ajax({
-	    url : '/api/user/all',
+	    url : '/api/users/'+emailFilter,
 	    type: 'GET',
 	    contentType:"application/json; charset=utf-8",
 	    dataType:"json",
 	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
 	    success: function(data)
 	    {
-	    	console.log('Get All Users - Response:')
+	    	usersTable.find('tr:gt(1)').remove();
+	    	usersTable.show();
+	    	var users = data;
+			for (it in users) {
+				var authorities=users[it].authorities;
+				var authoritiesString="";
+				for(jt in authorities){
+					if(jt==(authorities.length-1)){
+						authoritiesString=authoritiesString+authorities[jt].authority;
+					}else{
+						authoritiesString=authoritiesString+authorities[jt].authority+", ";
+					}
+				}
+				var chacked="";
+				if(users[it].enabled){
+					checked='<input type="checkbox" onclick="changeActive(\''+ users[it].username +'\')" name="'+ users[it].username +'" class="select-row" checked>';
+				}else{
+					checked='<input type="checkbox" onclick="changeActive(\''+ users[it].username +'\')" name="'+ users[it].username +'" class="select-row">';
+				}
+				usersTable.append(
+					'<tr>' +  
+						'<td>' + users[it].username + '</td>' + 
+						'<td>' + authoritiesString + '</td>' +
+						'<td>' + checked + '</td>' +
+						//'<td> <a href="C:\Users\Dejan\git\IBProjekat\IBProjekat\data\rakindejan@gmail.com.jks""_blank">Download</a> </td>'+
+						'<td>' + '<button type="button" onclick="getCertificate(\''+ users[it].username +'\')" class="btn btn-primary">Download certificate</button>' + '</td>' +
+					'</tr>'
+							)	
+				console.log('checked: '+checked);
+			}
+	    	
+	    	console.log('Get All Users - Response:');
 	    	console.log(data);
 	    	console.log("===========================================================================");
 	    	
-	    	$('#getAllUsersError').hide();
-	    	$('#getAllUsersSuccess').show();
+	    	/*$('#getAllUsersError').hide();
+	    	$('#getAllUsersSuccess').show();*/
 	    	
 	    },
 	    error: function (error)
@@ -137,6 +288,64 @@ function getAllUsers() {
 	    	$('#getAllUsersSuccess').hide();
 	    }
 	});
+}
+
+function getCertificate(email){
+
+	console.log("email: "+email);
+	
+	$.ajax({
+	    url : '/api/certificate/'+email,
+	    type: 'GET',
+	    contentType:"application/json; charset=utf-8",
+	    dataType:"json",
+	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
+	    success: function(data)
+	    {
+			var file = new File([data], email+".cer");
+			saveAs(file);
+	    }
+	});	
+
+}
+
+function getJks(email){
+
+	console.log("email: "+email);
+	
+	$.ajax({
+	    url : '/api/jks/'+email,
+	    type: 'GET',
+	    contentType:"application/json; charset=utf-8",
+	    dataType:"json",
+	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
+	    success: function(data)
+	    {
+			console.log("Usepsno su stigli podaci!");
+			console.log(data);
+			if(data === true){
+				alert("You have successfully downloaded the file!");
+			}
+		},
+		error: function (error)
+	    {
+	    	console.log(error);
+	    }
+	});	
+
+}
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
 }
 
 function getMessages() {
@@ -183,7 +392,6 @@ function getMessages() {
 	});
 }
 
-
 function foo() {
 	$.ajax({
 	    url : '/api/foo',
@@ -224,4 +432,6 @@ function _decodeJWT(token) {
 		console.log('Error decoding JWT. JWT Token is null.');
 	    return null;
 	  }
+	
+	
 }

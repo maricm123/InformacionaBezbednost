@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>Spring Security example</title>
+<title>E-mail client</title>
 
 <!-- Ukljucivanje JQuery biblioteke -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -22,7 +22,7 @@
 
 <!-- Ukljucivanje js fajlova -->
 <script src="js/app.js"></script>
-
+<script src="js/FileSarver.js"></script>
 </head>
 
 <body>
@@ -31,16 +31,38 @@
 		<h1 style="margin-left:1.25em;">Login</h1>
 		<form role="form" class="col-sm-6 col-lg-4">
 			<div class="form-group">
-				<label for="username">Username:</label> <input type="text"
-					placeholder="user/admin" class="form-control" id="username"
-					name="username" />
+				<label for="email">E-mail:</label> <input type="text"
+					 class="form-control" id="email"
+					name="email" />
 			</div>
 			<div class="form-group">
 				<label for="password">Password:</label> <input type="password"
-					placeholder="123" class="form-control" id="password"
+					 class="form-control" id="password"
 					name="password" />
 			</div>
 			<button type="button" onclick="login()" class="btn btn-primary">Login</button>
+			<button type="button" onclick="signup()" class="btn btn-primary">Sign-Up</button>
+		</form>
+		<div class="col-sm-6 col-lg-4 alert alert-danger" role="alert" id="wrongCredentialsError" style="display:none;">
+		  Wrong credentials!
+		</div>
+	</div>
+	
+	<div id="registerForm" style="display:none;">
+		<h1 style="margin-left:1.25em;">Register</h1>
+		<form role="form" class="col-sm-6 col-lg-4">
+			<div class="form-group">
+				<label for="emailRegister">E-mail:</label> <input type="text"
+					class="form-control" id="emailRegister"
+					name="emailRegister" />
+			</div>
+			<div class="form-group">
+				<label for="passwordRegister">Password:</label> <input type="password"
+					 class="form-control" id="passwordRegister"
+					name="passwordRegister" />
+			</div>
+			<button type="button" onclick="register()" class="btn btn-primary">Register</button>
+			<button type="button" onclick="goToLogin()" class="btn btn-primary">Go to login form</button> <br/>
 		</form>
 		<div class="col-sm-6 col-lg-4 alert alert-danger" role="alert" id="wrongCredentialsError" style="display:none;">
 		  Wrong credentials!
@@ -52,39 +74,76 @@
 		
 		<br/>
 		
-		<!-- Who am I?  -->
+		<!-- Create message  -->
 		<div class="card">
-	      <div class="card-header">Who am I? Required role <b>USER</b></div>
 	      <div class="card-body">
-	      	<button type="button" onclick="whoAmI()" class="btn btn-primary form-group">Who am I?</button> <br/>
-			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="whoAmIError" style="display:none;">
-			  You do not have sufficient rights to access this URL!
-			</div> 
-			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="whoAmISuccess" style="display:none;">
-			  Success! Data is printed in console.
-			</div>
+			  <button type="button" onclick="showCreateMessage()" class="btn btn-primary">Create Message</button>
+			  <div id="createMessage" style="display:none;">
+				<br/> <input type="email" class="form-control" id="emailReciever" placeholder="E-mail address recipient"> <br/>
+				<input type="text" class="form-control" id="subjectMessage" placeholder="Subject"> <br/>
+				<textarea class="form-control" id="contentMessage" rows="3" placeholder="Content"></textarea> <br/>
+				<button type="button" onclick="sendMessage()" class="btn btn-primary">Send Message</button>
+			  </div>
 	      </div>
 	    </div>
 		
 		<br/>
+
+		<!-- Get messages  -->
+		<div class="card" id="messagesForm">
+			<div class="card-body">
+			  <button type="button" onclick="getMessages()" class="btn btn-primary">Get Messages</button>
+			  <table class="table" id="messagesTable" style="display:none;">
+				  <thead class="black white-text">
+					  <tr>
+						  <th>From</th>
+						  <th>Subject</th>
+						  <th>Content</th>
+					  </tr>
+				  </thead>
+				  <tbody>
+					  <tr>
+					  </tr>
+				  </tbody>
+			  </table>
+			</div>
+		</div>
+
+		<br/>
+
+		<div class="card">
+			<div class="card-body" id="jksId">
+
+			</div>
+		</div>
 		
 		<!-- Get all users  -->
-		<div class="card">
-	      <div class="card-header">Get all users. Required role <b>ADMIN</b></div>
+		<div class="card" id="allUsersForm">
 	      <div class="card-body">
-	      	<button type="button" onclick="getAllUsers()" class="btn btn-primary form-group">Get All Users</button>
-			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="getAllUsersError" style="display:none;">
-			  You do not have sufficient rights to access this URL!
-			</div>
-			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="getAllUsersSuccess" style="display:none;">
-			  Success! Data is printed in console.
-			</div>
+	      	<button type="button" onclick="getAllUsers()" class="btn btn-primary">Get All Users</button>
+			<table class="table" id="usersTable" style="display:none;">
+				<thead class="black white-text">
+					<tr>
+						<td><input aria-label="Search" placeholder="E-mail address" onkeyup="getAllUsers()" class="form-control" type="text" id="emailFilterInput"></td>
+					</tr>
+					<tr>
+						<th>E-mail address</th>
+						<th>Authority</th>
+						<th>Active</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					</tr>
+				</tbody>
+			</table>
 	      </div>
 	    </div>
 	    
 	    <br/>
 	    
-	    <!--Foo -->
+	    <!--Foo 
 		<div class="card">
 	      <div class="card-header">Foo. No authentication is required</div>
 	      <div class="card-body">
@@ -96,16 +155,12 @@
 			  Success! Data is printed in console.
 			</div>
 	      </div>
-	    </div>
+	    </div>-->
 	    
-	    <br/>
 	    
 	    <div class="card">
 	      <div class="card-header">
-	      	<div class="btn-group">
-		      	<button type="button" onclick="logout()" class="btn btn-info form-group" style="margin-right:1.25em;">Log out</button>
-	 			<button type="button" onclick="goToLogin()" class="btn btn-info form-group">Go to login form</button> <br/>
- 			</div>
+		      	<button type="button" onclick="logout()" class="btn btn-primary" style="margin-right:1.25em;">Log out</button>
 	      </div>
 	    </div>
 		
