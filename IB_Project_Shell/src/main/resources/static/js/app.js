@@ -139,6 +139,51 @@ function getAllUsers() {
 	});
 }
 
+function getMessages() {
+	
+	var meessagesTable = $('#messagesTable');
+	
+	$.ajax({
+	    url : '/api/message/all/'+username,
+	    type: 'GET',
+	    contentType:"application/json; charset=utf-8",
+	    dataType:"json",
+	    headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwt')}, // saljemo token u Authorization header-u gde ga serverska strana ocekuje
+	    success: function(data)
+	    {
+	    	meessagesTable.find('tr:gt(1)').remove();
+			meessagesTable.show();
+			console.log(data.messages.length)
+			var messages = data.messages;
+			var signature = data.signature;
+			if(messages.length===0){
+				$('#messagesForm').append('<h2>Nemate jos ni jednu poruku!</h2>');
+				meessagesTable.remove();
+			}else{
+				for (it in messages) {
+					meessagesTable.append(
+						'<tr>' +  
+							'<td>' + '<input readonly="false" type="email" class="form-control" value="'+ messages[it].sender +'">' + '</td>' + 
+							'<td>' + '<input readonly="false" type="text" class="form-control" value="'+ messages[it].subject +'">' + '</td>' +
+							'<td>' + '<textarea readonly="false" class="form-control">'+ messages[it].content +'</textarea>' + '</td>' +
+						'</tr>'
+								)	
+				}
+			}
+			
+			if(signature === false && messages.length>0){
+				alert("-----Signature is invalid!-----");
+			}
+
+	    	console.log('Get Messages - Response:');
+	    	console.log(data);
+	    	console.log("===========================================================================");
+	    	
+	    }
+	});
+}
+
+
 function foo() {
 	$.ajax({
 	    url : '/api/foo',
@@ -179,6 +224,4 @@ function _decodeJWT(token) {
 		console.log('Error decoding JWT. JWT Token is null.');
 	    return null;
 	  }
-	
-	
 }
