@@ -2,10 +2,10 @@
 -- Baza koja se koristi je H2 in memory baza
 -- Gasenjem aplikacije, brisu se svi podaci
 
--- Obe lozinke su hesovane pomocu BCrypt algoritma https://www.dailycred.com/article/bcrypt-calculator
+-- Obe lozinke su hesovane pomocu BCrypt algoritma
 
-INSERT INTO USERS (id, email, password, certificate, active, last_password_reset_date) VALUES (1, 'mare@gmail.com', '$2a$10$XXh8WZEjVasyYiD80QHwt.xO.PR7ktfNrKj3/mQVmLEv.lz0AKDqu', './data/' ,true, '2017-10-01 21:58:58.508-07');
-INSERT INTO USERS (id, email, password, certificate, active, last_password_reset_date) VALUES (2, 'niko@gmail.com', '$2a$10$XXh8WZEjVasyYiD80QHwt.xO.PR7ktfNrKj3/mQVmLEv.lz0AKDqu', './data/' ,true, '2017-10-01 18:57:58.508-07');
+INSERT INTO USERS (id, email, password, certificate, active, last_password_reset_date) VALUES (1, 'mare@gmail.com', '$2a$12$ntDX3IO4sCSJFU39VjvsVOMIowQK3wVy9UmGS.Vvtr/lP.OWaMcne', './data/' ,true, '2017-10-01 21:58:58.508-07');
+INSERT INTO USERS (id, email, password, certificate, active, last_password_reset_date) VALUES (2, 'niko@gmail.com', '$2a$12$spkA99drHKsDVv8Tsrudpu9o0x.wZaOGBlBan14eUsEZcw62lAzO2', './data/' ,true, '2017-10-01 18:57:58.508-07');
 
 INSERT INTO AUTHORITY (id, name) VALUES (1, 'ROLE_REGULAR');
 INSERT INTO AUTHORITY (id, name) VALUES (2, 'ROLE_ADMIN');
