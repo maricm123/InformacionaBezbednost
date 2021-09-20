@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 // POJO koji implementira Spring Security GrantedAuthority kojim se mogu definisati role u aplikaciji
 @Entity
-@Table(name="AUTHORITY")
+@Table(name="authority")
 public class Authority implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
