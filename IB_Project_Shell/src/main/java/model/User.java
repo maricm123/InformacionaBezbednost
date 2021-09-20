@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -24,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 // POJO koji implementira Spring Security UserDetails interfejs koji specificira
 // osnovne osobine Spring korisnika (koje role ima, da li je nalog zakljucan, istekao, da li su kredencijali istekli)
 @Entity
-@Table(name="USERS")
-public class User implements UserDetails {
+@Table(name="users")
+public class User implements UserDetails, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
