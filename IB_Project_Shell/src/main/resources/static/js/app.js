@@ -267,7 +267,7 @@ function getAllUsers() {
 						'<td>' + users[it].username + '</td>' + 
 						'<td>' + authoritiesString + '</td>' +
 						'<td>' + checked + '</td>' +
-						//'<td> <a href="upisujem putanju do jks usera"_blank">Download</a> </td>'+
+						//'<td> <a href="C:\Users\Dejan\git\IBProjekat\IBProjekat\data\rakindejan@gmail.com.jks""_blank">Download</a> </td>'+
 						'<td>' + '<button type="button" onclick="getCertificate(\''+ users[it].username +'\')" class="btn btn-primary">Download certificate</button>' + '</td>' +
 					'</tr>'
 							)	
