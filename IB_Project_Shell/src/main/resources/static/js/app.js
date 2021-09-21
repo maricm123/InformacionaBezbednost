@@ -15,9 +15,9 @@ function login() {
 	var userJSON = JSON.stringify(user);
 	
 	$.ajax({
-	    url : '/auth/login',
-	    type: 'POST',
-	    data : userJSON,
+	    url: "https://localhost:8443/api/auth/login",
+	    type: "POST",
+	    data: userJSON,
 	    contentType:"application/json; charset=utf-8",
 	    dataType:"json",
 	    success: function(data)
