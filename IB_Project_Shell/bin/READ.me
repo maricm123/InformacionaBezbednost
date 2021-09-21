@@ -1,0 +1,17 @@
+Projekat sadrži kod koji biste mogli da iskoristite kao početnu tačku za projekat. 
+Pom.xml datoteka sadrži zavisnosti potrebne za rukovanje keystore datotekama.
+
+U primeru je još dato kako se kroz rest kontroler (Demo.java) može raditi upload i download. 
+Takođe, dat je primer download dugmeta na front-end strani (main.js, funkcionalnost je proverena u Mozilla browser-u). 
+Datoteke koje se dinamički kreiraju možete naći u target/classes/files/ folderu pod aplikacijom 
+(čitava putanja se ispiše prilikom pokretanja rešenja).
+
+Kako biste isprobali rešenje, prvo preko REST klijenta pogodite putanju: localhost:8443/api/demo koja u pomenutom
+folderu kreira datoteku demo.txt.
+Potom možete sa indeks stranice pokušati da odradite download: localhost:8443/api/demo
+
+Rešenje ima zavisnosti i konfiguraciju za h2 bazu podataka. To se, naravno, može promeniti.
+U slučaju da nastavite koristiti h2 bazu, možete da pregledate bazu na linku: http://localhost:8443/h2-console/.
+
+Srećan rad!
+

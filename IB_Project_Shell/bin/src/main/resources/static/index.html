@@ -1,0 +1,171 @@
+<html>
+
+<head>
+<title>E-mail client</title>
+
+<!-- Ukljucivanje JQuery biblioteke -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<!-- Ukljucivanje Bootstrap-a za izgled aplukacije -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script> 
+
+<!-- Ukljucivanje js fajlova -->
+<script src="js/app.js"></script>
+<script src="js/FileSarver.js"></script>
+</head>
+
+<body>
+
+	<div id="loginForm">
+		<h1 style="margin-left:1.25em;">Login</h1>
+		<form role="form" class="col-sm-6 col-lg-4">
+			<div class="form-group">
+				<label for="email">E-mail:</label> <input type="text"
+					 class="form-control" id="email"
+					name="email" />
+			</div>
+			<div class="form-group">
+				<label for="password">Password:</label> <input type="password"
+					 class="form-control" id="password"
+					name="password" />
+			</div>
+			<button type="button" onclick="login()" class="btn btn-primary">Login</button>
+			<button type="button" onclick="signup()" class="btn btn-primary">Sign-Up</button>
+		</form>
+		<div class="col-sm-6 col-lg-4 alert alert-danger" role="alert" id="wrongCredentialsError" style="display:none;">
+		  Wrong credentials!
+		</div>
+	</div>
+	
+	<div id="registerForm" style="display:none;">
+		<h1 style="margin-left:1.25em;">Register</h1>
+		<form role="form" class="col-sm-6 col-lg-4">
+			<div class="form-group">
+				<label for="emailRegister">E-mail:</label> <input type="text"
+					class="form-control" id="emailRegister"
+					name="emailRegister" />
+			</div>
+			<div class="form-group">
+				<label for="passwordRegister">Password:</label> <input type="password"
+					 class="form-control" id="passwordRegister"
+					name="passwordRegister" />
+			</div>
+			<button type="button" onclick="register()" class="btn btn-primary">Register</button>
+			<button type="button" onclick="goToLogin()" class="btn btn-primary">Go to login form</button> <br/>
+		</form>
+		<div class="col-sm-6 col-lg-4 alert alert-danger" role="alert" id="wrongCredentialsError" style="display:none;">
+		  Wrong credentials!
+		</div>
+	</div>
+	
+	<div id="otherForm" style="display:none;">
+		<h1 style="margin-left:1.25em;" id="welcomeMessage"></h1>
+		
+		<br/>
+		
+		<!-- Create message  -->
+		<div class="card">
+	      <div class="card-body">
+			  <button type="button" onclick="showCreateMessage()" class="btn btn-primary">Create Message</button>
+			  <div id="createMessage" style="display:none;">
+				<br/> <input type="email" class="form-control" id="emailReciever" placeholder="E-mail address recipient"> <br/>
+				<input type="text" class="form-control" id="subjectMessage" placeholder="Subject"> <br/>
+				<textarea class="form-control" id="contentMessage" rows="3" placeholder="Content"></textarea> <br/>
+				<button type="button" onclick="sendMessage()" class="btn btn-primary">Send Message</button>
+			  </div>
+	      </div>
+	    </div>
+		
+		<br/>
+
+		<!-- Get messages  -->
+		<div class="card" id="messagesForm">
+			<div class="card-body">
+			  <button type="button" onclick="getMessages()" class="btn btn-primary">Get Messages</button>
+			  <table class="table" id="messagesTable" style="display:none;">
+				  <thead class="black white-text">
+					  <tr>
+						  <th>From</th>
+						  <th>Subject</th>
+						  <th>Content</th>
+					  </tr>
+				  </thead>
+				  <tbody>
+					  <tr>
+					  </tr>
+				  </tbody>
+			  </table>
+			</div>
+		</div>
+
+		<br/>
+
+		<div class="card">
+			<div class="card-body" id="jksId">
+
+			</div>
+		</div>
+		
+		<!-- Get all users  -->
+		<div class="card" id="allUsersForm">
+	      <div class="card-body">
+	      	<button type="button" onclick="getAllUsers()" class="btn btn-primary">Get All Users</button>
+			<table class="table" id="usersTable" style="display:none;">
+				<thead class="black white-text">
+					<tr>
+						<td><input aria-label="Search" placeholder="E-mail address" onkeyup="getAllUsers()" class="form-control" type="text" id="emailFilterInput"></td>
+					</tr>
+					<tr>
+						<th>E-mail address</th>
+						<th>Authority</th>
+						<th>Active</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					</tr>
+				</tbody>
+			</table>
+	      </div>
+	    </div>
+	    
+	    <br/>
+	    
+	    <!--Foo 
+		<div class="card">
+	      <div class="card-header">Foo. No authentication is required</div>
+	      <div class="card-body">
+	      	<button type="button" onclick="foo()" class="btn btn-primary form-group">Foo</button>
+			<div class="col-sm-6 col-lg-4 alert alert-danger form-group" role="alert" id="fooError" style="display:none;">
+			  You do not have sufficient rights to access this URL!
+			</div>
+			<div class="col-sm-6 col-lg-4 alert alert-success form-group" role="alert" id="fooSuccess" style="display:none;">
+			  Success! Data is printed in console.
+			</div>
+	      </div>
+	    </div>-->
+	    
+	    
+	    <div class="card">
+	      <div class="card-header">
+		      	<button type="button" onclick="logout()" class="btn btn-primary" style="margin-right:1.25em;">Log out</button>
+	      </div>
+	    </div>
+		
+	</div>
+
+</body>
+
+</html>
